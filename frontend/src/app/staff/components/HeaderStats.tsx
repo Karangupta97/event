@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin, User, Users } from "lucide-react";
+import Link from "next/link";
+import { MapPin, User, Users, Shield } from "lucide-react";
 import {
   formatCount,
   occupancyPercent,
@@ -17,7 +18,7 @@ export function DesktopTopBar({
   activeTab: NavTab;
   onTabChange: (tab: NavTab) => void;
 }) {
-  const { session } = useStaffData();
+  const { session, eventName } = useStaffData();
   return (
     <header className="staff-topbar sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
@@ -25,7 +26,7 @@ export function DesktopTopBar({
         {/* Brand + greeting — left */}
         <div className="flex min-w-0 shrink-0 items-center gap-3">
           <div className="staff-logo flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-white shadow-md shadow-blue-500/25">
-            EF
+            VR
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-base font-bold tracking-tight text-slate-900 xl:text-lg">
@@ -33,7 +34,7 @@ export function DesktopTopBar({
               <span className="staff-wave inline-block origin-[70%_70%]">👋</span>
             </h1>
             <p className="hidden truncate text-xs text-slate-500 xl:block">
-              Stay alert. Keep your zone safe.
+              {eventName} · Live Synced with Org Command
             </p>
           </div>
         </div>
@@ -45,8 +46,21 @@ export function DesktopTopBar({
           </div>
         </div>
 
-        {/* Profile — right */}
-        <div className="ml-auto flex shrink-0 items-center">
+        {/* Controls + Profile — right */}
+        <div className="ml-auto flex shrink-0 items-center gap-3">
+          <Link
+            href="/org"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-xs transition hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-700"
+            title="Switch to Venuro Org Command Center"
+          >
+            <Shield className="h-3.5 w-3.5 text-blue-600" />
+            <span className="hidden sm:inline">Org Command</span>
+            <span className="flex items-center gap-1 text-[11px] font-normal text-emerald-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live
+            </span>
+          </Link>
+
           <button
             type="button"
             className="staff-profile group relative flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"

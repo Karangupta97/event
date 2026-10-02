@@ -48,7 +48,7 @@ export function MobileNav({ alertCount }: { alertCount: number }) {
                   </span>
                   <div>
                     <p className="text-[15px] font-semibold leading-tight text-slate-900">
-                      EventFlow
+                      Venuro
                     </p>
                     <p className="text-xs text-slate-500">Organizer Console</p>
                   </div>
@@ -98,7 +98,7 @@ export function MobileNav({ alertCount }: { alertCount: number }) {
                   </span>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">
-                      TechFest 2025
+                      Mood Indigo
                     </p>
                     <p className="text-xs text-slate-500 tnum">22 – 24 Aug 2025</p>
                   </div>

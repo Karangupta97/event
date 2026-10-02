@@ -73,19 +73,16 @@ export function EmergencyBanner({ variant = "desktop" }: { variant?: "desktop" |
 }
 
 export function ActiveAlertsList({ limit }: { limit?: number }) {
-  const { alerts } = useStaffData();
+  const { alerts, markAlertOnSite, resolveAlert } = useStaffData();
   const items = limit ? alerts.slice(0, limit) : alerts;
 
   return (
     <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-800">Active Alerts</h2>
-        <button
-          type="button"
-          className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-        >
-          View all
-        </button>
+        <span className="text-xs font-semibold text-blue-600">
+          {items.length} incidents tracked
+        </span>
       </div>
       <ul className="space-y-2.5">
         {items.map((alert) => {
@@ -104,13 +101,33 @@ export function ActiveAlertsList({ limit }: { limit?: number }) {
                   <span className="text-[11px] text-slate-400">{alert.time}</span>
                 </div>
                 <p className="text-xs text-slate-600">{alert.title}</p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                  <p className="text-[11px] text-slate-400">{alert.description}</p>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${status.className}`}
-                  >
-                    {status.label}
-                  </span>
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100/80 pt-2">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[11px] text-slate-400">{alert.description}</p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${status.className}`}
+                    >
+                      {status.label}
+                    </span>
+                  </div>
+                  {alert.status === "assigned" && (
+                    <button
+                      type="button"
+                      onClick={() => markAlertOnSite(alert.id)}
+                      className="rounded-lg bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 transition hover:bg-blue-100 active:scale-95"
+                    >
+                      📍 Mark On-Site
+                    </button>
+                  )}
+                  {alert.status === "on-site" && (
+                    <button
+                      type="button"
+                      onClick={() => resolveAlert(alert.id)}
+                      className="rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-100 active:scale-95"
+                    >
+                      ✓ Mark Resolved
+                    </button>
+                  )}
                 </div>
               </div>
             </li>

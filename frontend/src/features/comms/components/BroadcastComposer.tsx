@@ -186,10 +186,10 @@ export function BroadcastComposer({ zones }: { zones: Zone[] }) {
               <div className="rounded-2xl bg-white/95 p-3 shadow-lg backdrop-blur">
                 <div className="mb-1.5 flex items-center gap-2">
                   <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-bold text-white">
-                    EF
+                    VR
                   </span>
                   <span className="flex-1 text-xs font-semibold text-slate-900">
-                    EventFlow
+                    Venuro
                   </span>
                   <span className="text-[10px] text-slate-400 tnum">now</span>
                 </div>

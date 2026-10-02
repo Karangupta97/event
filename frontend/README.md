@@ -1,4 +1,4 @@
-# EventFlow — Organizer Operations Dashboard
+# Venuro — Organizer Operations Dashboard
 
 A hackathon MVP for **Smart Event Crowd Management**. It gives an event
 organizer a single screen to answer, in about three seconds: _Is anything

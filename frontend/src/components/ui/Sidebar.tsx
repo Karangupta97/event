@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Shield, Calendar } from "lucide-react";
+import { Shield, Calendar, Smartphone } from "lucide-react";
 import { NAV_ITEMS, activeNavId } from "./nav";
 import { Badge } from "./Pill";
 import { cn } from "./cn";
@@ -24,7 +24,7 @@ export function Sidebar({ alertCount }: { alertCount: number }) {
         </span>
         <div>
           <p className="text-[15px] font-semibold leading-tight text-slate-900">
-            EventFlow
+            Venuro
           </p>
           <p className="text-xs text-slate-500">Organizer Console</p>
         </div>
@@ -78,16 +78,34 @@ export function Sidebar({ alertCount }: { alertCount: number }) {
       </nav>
 
       {/* event card */}
-      <div className="p-3">
+      <div className="p-3 space-y-2">
         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
             <Calendar className="h-[18px] w-[18px]" />
           </span>
-          <div>
-            <p className="text-sm font-semibold text-slate-900">TechFest 2025</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-slate-900 truncate">Mood Indigo</p>
             <p className="text-xs text-slate-500 tnum">22 – 24 Aug 2025</p>
           </div>
         </div>
+
+        {/* direct bridge to Field Staff Console */}
+        <Link
+          href="/staff"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between gap-2 rounded-xl border border-blue-200/80 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 px-3 py-2.5 text-xs font-semibold text-blue-700 transition hover:border-blue-300 hover:shadow-xs group"
+          title="Open connected field staff console in a new tab"
+        >
+          <div className="flex items-center gap-2">
+            <Smartphone className="h-4 w-4 text-blue-600 transition group-hover:scale-110" />
+            <span>Field Staff Console</span>
+          </div>
+          <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live
+          </span>
+        </Link>
       </div>
     </aside>
   );

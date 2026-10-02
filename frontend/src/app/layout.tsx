@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "EventFlow — Smart Event Crowd Management",
+  title: "Venuro — Smart Event Crowd Management",
   description:
     "Monitor the venue and act before it gets crowded — organizer and staff consoles.",
 };

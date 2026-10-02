@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft, Clock, Settings, Users } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Clock, Settings, Users, Shield } from "lucide-react";
 import { useState } from "react";
 import { useStaffData } from "./store-adapter";
 import type { NavTab } from "./types";
@@ -19,6 +20,11 @@ import {
 } from "./components/HeaderStats";
 import { OnlineBadge } from "./components/shared";
 import { VenueMap, ZoneCardList } from "./components/VenueMap";
+import {
+  LiveBroadcastBanner,
+  FieldCommsBox,
+  BroadcastsList,
+} from "./components/LiveComms";
 
 export default function StaffDashboard() {
   const { session, eventName } = useStaffData();
@@ -33,6 +39,9 @@ export default function StaffDashboard() {
         <DesktopTopBar activeTab={activeTab} onTabChange={setActiveTab} />
 
         <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4 p-5 xl:p-6">
+          {/* Live broadcast from Org Command */}
+          <LiveBroadcastBanner />
+
           {(activeTab === "map" ||
             activeTab === "alerts" ||
             activeTab === "dispatch") && <DesktopStatCards />}
@@ -54,6 +63,8 @@ export default function StaffDashboard() {
             <div className="mx-auto w-full max-w-2xl space-y-4">
               <EmergencyBanner />
               <ActiveAlertsList />
+              <FieldCommsBox />
+              <BroadcastsList />
             </div>
           )}
 
@@ -100,13 +111,14 @@ export default function StaffDashboard() {
       <div className="flex min-h-screen flex-col lg:hidden">
         <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/95 px-4 py-3 backdrop-blur">
           <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600"
-              aria-label="Back"
+            <Link
+              href="/org"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition hover:bg-blue-100"
+              aria-label="Switch to Org Command"
+              title="Switch to Org Command"
             >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
+              <Shield className="h-4 w-4" />
+            </Link>
             <div className="min-w-0 flex-1">
               <h1 className="text-base font-bold text-slate-900">
                 {activeTab === "map"
@@ -119,11 +131,20 @@ export default function StaffDashboard() {
               </h1>
               <p className="text-[11px] text-slate-400">{eventName}</p>
             </div>
+            <Link
+              href="/org"
+              className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 shadow-xs hover:bg-slate-50"
+            >
+              Org →
+            </Link>
             <OnlineBadge compact />
           </div>
         </header>
 
         <main className="flex-1 space-y-4 px-4 py-4 pb-24">
+          {/* Live broadcast from Org Command */}
+          <LiveBroadcastBanner />
+
           {activeTab === "map" && (
             <>
               <MobileHeaderCards
@@ -159,12 +180,15 @@ export default function StaffDashboard() {
               <EmergencyBanner variant="mobile" />
               <EmergencyBanner />
               <ActiveAlertsList />
+              <FieldCommsBox />
+              <BroadcastsList />
             </div>
           )}
 
           {activeTab === "dispatch" && (
             <div className="space-y-4">
               <DispatchPanel defaultOpen defaultZoneId="food-court" />
+              <FieldCommsBox />
               <QuickStats zoneId={selectedZoneId} />
             </div>
           )}

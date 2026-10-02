@@ -57,7 +57,7 @@ export function VenueMap({
         >
           <Image
             src="/venue_map.png"
-            alt="EventFlow venue map showing all zones and occupancy"
+            alt="Venuro venue map showing all zones and occupancy"
             fill
             priority
             className="staff-map-image object-contain object-center p-3 sm:p-4 lg:p-5"

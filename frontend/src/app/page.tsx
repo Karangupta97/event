@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-canvas px-6 text-center">
       <div>
-        <p className="text-sm font-medium text-blue-600">EventFlow</p>
+        <p className="text-sm font-medium text-blue-600">Venuro</p>
         <h1 className="mt-1 text-2xl font-semibold text-slate-900">
           Landing page coming soon
         </h1>

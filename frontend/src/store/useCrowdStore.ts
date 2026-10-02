@@ -228,7 +228,7 @@ export const useCrowdStore = create<CrowdState>()(
   },
     }),
     {
-      name: "eventflow-crowd-store",
+      name: "venuro-crowd-store",
       storage: createJSONStorage(() => localStorage),
       // Persist only the domain state, not the action functions.
       partialize: (s) => ({

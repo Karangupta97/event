@@ -11,11 +11,13 @@
  */
 
 import { useMemo } from "react";
-import { useCrowdStore } from "@/store/useCrowdStore";
+import { useCrowdStore, uid } from "@/store/useCrowdStore";
+import { sendCrossTabMessage } from "@/store/crossTabSync";
 import { zoneStatus } from "@/features/zones/types";
 import type { Zone as OrgZone } from "@/features/zones/types";
 import type { Staff as OrgStaff } from "@/features/staff/types";
 import type { Alert as OrgAlert } from "@/features/alerts/types";
+import type { Broadcast } from "@/features/comms/types";
 import type {
   Alert as StaffAlert,
   AlertPriority,
@@ -202,7 +204,7 @@ function alertToStaff(
 /* Public hook: everything the staff console needs, from the live store*/
 /* ------------------------------------------------------------------ */
 
-export const EVENT_NAME = "EventFlow 2025";
+export const EVENT_NAME = "Mood Indigo";
 
 /** staff session: the current volunteer is the first roster member */
 const SESSION_STAFF_INDEX = 0;
@@ -213,18 +215,29 @@ export interface StaffData {
   zones: StaffZone[];
   volunteers: Volunteer[];
   alerts: StaffAlert[];
+  broadcasts: Broadcast[];
+  latestBroadcast: Broadcast | null;
   teamInfo: TeamInfo;
   emergencyAlert: EmergencyAlert | null;
   earlyWarning: EmergencyAlert | null;
   getZoneById: (staffZoneId: string) => StaffZone | undefined;
+  markAlertOnSite: (alertId: string) => void;
+  resolveAlert: (alertId: string) => void;
+  acknowledgeBroadcast: (broadcastId: string) => void;
+  sendFieldMessage: (message: string, destZoneId?: string) => void;
 }
 
 export function useStaffData(): StaffData {
   const zones = useCrowdStore((s) => s.zones);
   const staff = useCrowdStore((s) => s.staff);
   const alerts = useCrowdStore((s) => s.alerts);
+  const broadcasts = useCrowdStore((s) => s.broadcasts);
   const mode = useCrowdStore((s) => s.mode);
   const emergencyStartedAt = useCrowdStore((s) => s.emergencyStartedAt);
+  const setAlertStatus = useCrowdStore((s) => s.setAlertStatus);
+  const patchStaff = useCrowdStore((s) => s.patchStaff);
+  const addBroadcast = useCrowdStore((s) => s.addBroadcast);
+  const log = useCrowdStore((s) => s.log);
 
   return useMemo<StaffData>(() => {
     const zonesById = new Map(zones.map((z) => [z.id, z]));
@@ -299,18 +312,114 @@ export function useStaffData(): StaffData {
     const getZoneById = (staffZoneId: string) =>
       staffZones.find((z) => z.id === staffZoneId);
 
+    // Active broadcasts from organizer
+    const relevantBroadcasts = broadcasts.filter(
+      (b) => b.channel === "staff" || b.channel === "all" || b.channel === "attendees",
+    );
+    const latestBroadcast = relevantBroadcasts[0] ?? null;
+
+    const markAlertOnSite = (alertId: string) => {
+      const targetAlert = alerts.find((a) => a.id === alertId);
+      setAlertStatus(alertId, "on_site");
+      log({
+        kind: "alert",
+        zoneId: targetAlert?.zoneId,
+        message: `Field staff (${session.name}) marked on-site for incident`,
+      });
+      sendCrossTabMessage("ALERT_STATUS_CHANGED", {
+        alertId,
+        status: "on_site",
+        staffName: session.name,
+      });
+    };
+
+    const resolveAlert = (alertId: string) => {
+      const targetAlert = alerts.find((a) => a.id === alertId);
+      setAlertStatus(alertId, "resolved");
+      if (targetAlert?.assignedTo) {
+        patchStaff(
+          staff.map((s) =>
+            s.id === targetAlert.assignedTo ? { ...s, status: "available" } : s,
+          ),
+        );
+      }
+      log({
+        kind: "alert",
+        zoneId: targetAlert?.zoneId,
+        message: `Incident resolved by field staff (${session.name})`,
+      });
+      sendCrossTabMessage("ALERT_STATUS_CHANGED", {
+        alertId,
+        status: "resolved",
+        staffName: session.name,
+      });
+    };
+
+    const acknowledgeBroadcast = (broadcastId: string) => {
+      const b = broadcasts.find((item) => item.id === broadcastId);
+      log({
+        kind: "broadcast",
+        message: `Field staff ${session.name} acknowledged: "${b?.message?.slice(0, 45) ?? "Broadcast"}"`,
+      });
+      sendCrossTabMessage("BROADCAST_ACKNOWLEDGED", {
+        broadcastId,
+        staffName: session.name,
+      });
+    };
+
+    const sendFieldMessage = (text: string, destZoneId?: string) => {
+      if (!text.trim()) return;
+      const targetOrgZone = destZoneId ? toOrgZoneId(destZoneId) : myZoneOrgId;
+      const zoneName = zonesById.get(targetOrgZone)?.name ?? "Zone";
+      addBroadcast({
+        id: uid("field_bc"),
+        channel: "staff",
+        severity: "info",
+        zoneIds: [targetOrgZone],
+        message: `[${session.name} @ ${zoneName}]: ${text.trim()}`,
+        sentAt: Date.now(),
+      });
+      log({
+        kind: "dispatch",
+        zoneId: targetOrgZone,
+        message: `Field update from ${session.name}: "${text.trim()}"`,
+      });
+      sendCrossTabMessage("FIELD_UPDATE", {
+        staffName: session.name,
+        zoneName,
+        message: text.trim(),
+      });
+    };
+
     return {
       eventName: EVENT_NAME,
       session,
       zones: staffZones,
       volunteers,
       alerts: staffAlerts,
+      broadcasts: relevantBroadcasts,
+      latestBroadcast,
       teamInfo,
       emergencyAlert,
       earlyWarning,
       getZoneById,
+      markAlertOnSite,
+      resolveAlert,
+      acknowledgeBroadcast,
+      sendFieldMessage,
     };
-  }, [zones, staff, alerts, mode, emergencyStartedAt]);
+  }, [
+    zones,
+    staff,
+    alerts,
+    broadcasts,
+    mode,
+    emergencyStartedAt,
+    setAlertStatus,
+    patchStaff,
+    addBroadcast,
+    log,
+  ]);
 }
 
 /* ------------------------------------------------------------------ */
