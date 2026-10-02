@@ -1,7 +1,20 @@
+<<<<<<< Updated upstream
 import type { Metadata } from "next";
 import Navbar from "@/app/components/Navbar";
 import ScrollReveal from "@/app/components/ScrollReveal";
 import LiveEventCard from "@/app/components/LiveEventCard";
+=======
+import Link from "next/link";
+import { Card, CrowdBadge, CapacityBar, SectionTitle } from "./components/ui";
+import {
+  ChevronRightIcon,
+  MapIcon,
+  FacilitiesIcon,
+  ClockIcon,
+  PinIcon,
+} from "./components/icons";
+import { eventInfo, zones, eventUpdates } from "./lib/data";
+>>>>>>> Stashed changes
 
 export const metadata: Metadata = {
   title: "SmartFlow — Smart Event Crowd Management",
@@ -96,7 +109,10 @@ const features = [
 
 /* ─── page ────────────────────────────────────────── */
 export default function Home() {
+  const busiest = [...zones].sort((a, b) => b.capacity - a.capacity).slice(0, 3);
+
   return (
+<<<<<<< Updated upstream
     <>
       <Navbar />
       <ScrollReveal />
@@ -1765,5 +1781,151 @@ export default function Home() {
 
       </main>
     </>
+=======
+    <div className="venuro-rise">
+      {/* Brand header (mobile shows it; desktop uses the top nav) */}
+      <header className="sticky top-0 z-30 border-b border-border bg-white/80 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-sm font-bold text-white shadow-brand">
+            V
+          </span>
+          <div>
+            <p className="text-sm font-semibold leading-tight tracking-tight">Venuro</p>
+            <p className="text-[11px] leading-tight text-muted">Your event companion</p>
+          </div>
+        </div>
+      </header>
+
+      <div className="space-y-6 p-4 lg:pt-6">
+        {/* Event hero */}
+        <div className="brand-hero relative overflow-hidden rounded-3xl p-5">
+          {/* decorative glow blobs */}
+          <span className="hero-glow -right-6 -top-10 h-28 w-28 bg-white/20" />
+          <span className="hero-glow bottom-[-30px] left-10 h-24 w-24 bg-white/10" />
+
+          <div className="relative">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/90 ring-1 ring-white/20">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" />
+              Live now
+            </span>
+            <h2 className="mt-3 text-2xl font-bold leading-tight tracking-tight">
+              {eventInfo.name}
+            </h2>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-white/85">
+              <span className="inline-flex items-center gap-1.5">
+                <PinIcon width={14} height={14} /> {eventInfo.venue}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <ClockIcon width={14} height={14} /> {eventInfo.dateLabel}
+              </span>
+            </div>
+            <div className="mt-4 inline-flex items-center rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-blue-700 shadow-sm">
+              {eventInfo.weather}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick entries with soft color accents */}
+        <div className="grid grid-cols-2 gap-3.5">
+          <Link href="/map" className="group">
+            <div className="relative h-full overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-soft transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-card">
+              <span className="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full bg-blue-50" />
+              <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
+                <MapIcon width={21} height={21} />
+              </span>
+              <p className="relative mt-3 text-[15px] font-semibold">Venue Map</p>
+              <p className="relative text-[11px] text-muted">Stages, exits & zones</p>
+            </div>
+          </Link>
+          <Link href="/facilities" className="group">
+            <div className="relative h-full overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-soft transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-card">
+              <span className="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full bg-violet-50" />
+              <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 text-white shadow-sm">
+                <FacilitiesIcon width={21} height={21} />
+              </span>
+              <p className="relative mt-3 text-[15px] font-semibold">Facilities</p>
+              <p className="relative text-[11px] text-muted">Food, restrooms & more</p>
+            </div>
+          </Link>
+        </div>
+
+        {/* Live crowd levels */}
+        <section>
+          <SectionTitle
+            title="Live crowd levels"
+            action={
+              <Link href="/map" className="text-xs font-semibold text-blue-600">
+                View map
+              </Link>
+            }
+          />
+          <div className="space-y-3">
+            {busiest.map((zone) => (
+              <Link key={zone.id} href={`/map?zone=${zone.id}`}>
+                <Card interactive>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{zone.name}</p>
+                      <p className="text-[11px] text-muted">{zone.category}</p>
+                    </div>
+                    <CrowdBadge level={zone.crowd} />
+                  </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <CapacityBar value={zone.capacity} />
+                    <span className="w-9 shrink-0 text-right text-[11px] font-semibold text-muted">
+                      {zone.capacity}%
+                    </span>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Event updates — timeline style, less boxy */}
+        <section>
+          <SectionTitle title="Event updates" />
+          <div className="rounded-2xl border border-border bg-white p-4 shadow-soft">
+            <ol className="relative space-y-4 pl-4">
+              {/* vertical timeline line */}
+              <span className="absolute bottom-2 left-[5px] top-2 w-px bg-border" />
+              {eventUpdates.map((u) => (
+                <li key={u.id} className="relative">
+                  <span
+                    className={`absolute -left-4 top-1 h-2.5 w-2.5 rounded-full ring-4 ring-white ${
+                      u.kind === "alert"
+                        ? "bg-rose-500"
+                        : u.kind === "schedule"
+                          ? "bg-blue-600"
+                          : "bg-slate-300"
+                    }`}
+                  />
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="text-sm font-semibold">{u.title}</p>
+                    <span className="shrink-0 text-[11px] text-muted">{u.time}</span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-muted">{u.detail}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* Facilities entry banner */}
+        <Link href="/facilities" className="group block">
+          <div className="flex items-center gap-3 overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-violet-50 p-4 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-card">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm">
+              <FacilitiesIcon width={20} height={20} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">Find facilities nearby</p>
+              <p className="text-xs text-muted">Food, restrooms, water, Wi-Fi and more</p>
+            </div>
+            <ChevronRightIcon width={18} height={18} className="shrink-0 text-blue-500" />
+          </div>
+        </Link>
+      </div>
+    </div>
+>>>>>>> Stashed changes
   );
 }
