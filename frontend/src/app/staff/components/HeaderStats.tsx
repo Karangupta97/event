@@ -3,14 +3,12 @@
 import { MapPin, User, Users } from "lucide-react";
 import {
   formatCount,
-  getZoneById,
   occupancyPercent,
-  staffSession,
-  teamInfo,
-} from "../mock-data";
+  useStaffData,
+} from "../store-adapter";
 import type { NavTab } from "../types";
 import { TopNav } from "./BottomNav";
-import { OnlineBadge, OccupancyRing } from "./shared";
+import { OccupancyRing } from "./shared";
 
 export function DesktopTopBar({
   activeTab,
@@ -19,6 +17,7 @@ export function DesktopTopBar({
   activeTab: NavTab;
   onTabChange: (tab: NavTab) => void;
 }) {
+  const { session } = useStaffData();
   return (
     <header className="staff-topbar sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
@@ -30,7 +29,7 @@ export function DesktopTopBar({
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-base font-bold tracking-tight text-slate-900 xl:text-lg">
-              Welcome, {staffSession.name}{" "}
+              Welcome, {session.name}{" "}
               <span className="staff-wave inline-block origin-[70%_70%]">👋</span>
             </h1>
             <p className="hidden truncate text-xs text-slate-500 xl:block">
@@ -46,15 +45,22 @@ export function DesktopTopBar({
           </div>
         </div>
 
-        {/* Status — right */}
-        <div className="ml-auto flex shrink-0 items-center gap-2.5">
-          <OnlineBadge />
+        {/* Profile — right */}
+        <div className="ml-auto flex shrink-0 items-center">
           <button
             type="button"
-            className="group flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition duration-200 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
+            className="staff-profile group relative flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
             aria-label="Profile"
           >
-            V
+            <span className="staff-profile-ring absolute inset-0 rounded-full" aria-hidden />
+            <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-sm font-semibold text-white shadow-md shadow-blue-500/30 transition duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/40 group-active:scale-95">
+              V
+            </span>
+            <span
+              className="staff-online-dot absolute bottom-0 right-0 z-20 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500"
+              title="Online"
+              aria-hidden
+            />
           </button>
         </div>
       </div>
@@ -63,12 +69,14 @@ export function DesktopTopBar({
 }
 
 export function DesktopStatCards() {
-  const zone = getZoneById(staffSession.zoneId)!;
+  const { session, teamInfo, getZoneById } = useStaffData();
+  const zone = getZoneById(session.zoneId);
+  if (!zone) return null;
   const percent = occupancyPercent(zone.current, zone.capacity);
 
   return (
     <div className="grid gap-3 sm:grid-cols-3">
-      <article className="rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
+      <article className="staff-rise-in staff-card-hover rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
         <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <MapPin className="h-4 w-4" />
         </div>
@@ -81,7 +89,7 @@ export function DesktopStatCards() {
         </p>
       </article>
 
-      <article className="rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
+      <article className="staff-rise-in staff-delay-1 staff-card-hover rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
         <div className="flex items-start justify-between">
           <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
             <User className="h-4 w-4" />
@@ -101,7 +109,7 @@ export function DesktopStatCards() {
         </p>
       </article>
 
-      <article className="rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
+      <article className="staff-rise-in staff-delay-2 staff-card-hover rounded-2xl border border-slate-100 bg-white p-3.5 shadow-sm">
         <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <Users className="h-4 w-4" />
         </div>
@@ -124,7 +132,9 @@ export function MobileHeaderCards({
 }: {
   onZoneChange?: () => void;
 }) {
-  const zone = getZoneById(staffSession.zoneId)!;
+  const { session, teamInfo, getZoneById } = useStaffData();
+  const zone = getZoneById(session.zoneId);
+  if (!zone) return null;
 
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -164,11 +174,13 @@ export function MobileHeaderCards({
 }
 
 export function QuickStats({
-  zoneId = staffSession.zoneId,
+  zoneId,
 }: {
   zoneId?: string;
 }) {
-  const zone = getZoneById(zoneId)!;
+  const { session, getZoneById } = useStaffData();
+  const zone = getZoneById(zoneId ?? session.zoneId);
+  if (!zone) return null;
   const percent = occupancyPercent(zone.current, zone.capacity);
   const ringClass =
     percent >= 75

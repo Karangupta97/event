@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowLeft, Settings } from "lucide-react";
+import { ArrowLeft, Clock, Settings, Users } from "lucide-react";
 import { useState } from "react";
-import { EVENT_NAME, staffSession } from "./mock-data";
+import { useStaffData } from "./store-adapter";
 import type { NavTab } from "./types";
 import {
   ActiveAlertsList,
@@ -21,8 +21,9 @@ import { OnlineBadge } from "./components/shared";
 import { VenueMap, ZoneCardList } from "./components/VenueMap";
 
 export default function StaffDashboard() {
+  const { session, eventName } = useStaffData();
   const [activeTab, setActiveTab] = useState<NavTab>("map");
-  const [selectedZoneId, setSelectedZoneId] = useState(staffSession.zoneId);
+  const [selectedZoneId, setSelectedZoneId] = useState(session.zoneId);
   const [showZoneCards, setShowZoneCards] = useState(false);
 
   return (
@@ -37,19 +38,14 @@ export default function StaffDashboard() {
             activeTab === "dispatch") && <DesktopStatCards />}
 
           {activeTab === "map" && (
-            <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.7fr)]">
-              <div className="min-h-[580px]">
+            <div className="staff-map-page flex min-h-0 flex-1 flex-col gap-3">
+              <EmergencyBanner />
+              <div className="min-h-[min(78vh,860px)] w-full">
                 <VenueMap
+                  expanded
                   selectedZoneId={selectedZoneId}
                   onSelectZone={setSelectedZoneId}
                 />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <EmergencyBanner />
-                <DispatchPanel defaultZoneId="food-court" />
-                <QuickStats zoneId={selectedZoneId} />
-                <ActiveAlertsList limit={3} />
               </div>
             </div>
           )}
@@ -62,8 +58,37 @@ export default function StaffDashboard() {
           )}
 
           {activeTab === "dispatch" && (
-            <div className="mx-auto w-full max-w-lg">
-              <DispatchPanel defaultOpen defaultZoneId="food-court" />
+            <div className="grid w-full gap-4 lg:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
+              <div className="staff-rise-in">
+                <DispatchPanel defaultOpen defaultZoneId="food-court" />
+              </div>
+
+              <div className="staff-rise-in staff-delay-1 flex flex-col gap-4">
+                <QuickStats zoneId={selectedZoneId} />
+                <div className="staff-card-hover flex-1 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                  <h2 className="text-sm font-semibold text-slate-800">
+                    How requests work
+                  </h2>
+                  <ul className="mt-3 space-y-2.5 text-xs leading-relaxed text-slate-500">
+                    <li className="flex gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                      Pick an available volunteer nearby your zone.
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                      Choose the target area that needs backup.
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                      Add a short note so they know what to expect.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="staff-rise-in staff-delay-2 lg:col-span-2 xl:col-span-1">
+                <DispatchSidePanel />
+              </div>
             </div>
           )}
 
@@ -92,7 +117,7 @@ export default function StaffDashboard() {
                       ? "Dispatch"
                       : "Settings"}
               </h1>
-              <p className="text-[11px] text-slate-400">{EVENT_NAME}</p>
+              <p className="text-[11px] text-slate-400">{eventName}</p>
             </div>
             <OnlineBadge compact />
           </div>
@@ -116,6 +141,7 @@ export default function StaffDashboard() {
               ) : (
                 <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
                   <VenueMap
+                    expanded
                     selectedZoneId={selectedZoneId}
                     onSelectZone={setSelectedZoneId}
                   />
@@ -124,11 +150,6 @@ export default function StaffDashboard() {
 
               <EmergencyBanner variant="mobile" />
               <AlertsPanel collapsible defaultOpen={false} />
-              <DispatchPanel
-                collapsible
-                defaultOpen={false}
-                defaultZoneId="food-court"
-              />
               <QuickStats zoneId={selectedZoneId} />
             </>
           )}
@@ -142,7 +163,10 @@ export default function StaffDashboard() {
           )}
 
           {activeTab === "dispatch" && (
-            <DispatchPanel defaultOpen defaultZoneId="food-court" />
+            <div className="space-y-4">
+              <DispatchPanel defaultOpen defaultZoneId="food-court" />
+              <QuickStats zoneId={selectedZoneId} />
+            </div>
           )}
 
           {activeTab === "settings" && <SettingsPanel />}
@@ -150,6 +174,97 @@ export default function StaffDashboard() {
 
         <BottomNav active={activeTab} onChange={setActiveTab} />
       </div>
+    </div>
+  );
+}
+
+const statusMeta: Record<
+  string,
+  { label: string; dot: string; text: string }
+> = {
+  available: { label: "Available", dot: "bg-emerald-500", text: "text-emerald-600" },
+  busy: { label: "Busy", dot: "bg-amber-400", text: "text-amber-600" },
+  offline: { label: "Offline", dot: "bg-slate-300", text: "text-slate-400" },
+};
+
+function DispatchSidePanel() {
+  const { volunteers, alerts } = useStaffData();
+  return (
+    <div className="flex h-full flex-col gap-4">
+      <section className="staff-card-hover rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <Users className="h-4 w-4 text-slate-400" />
+          <h2 className="text-sm font-semibold text-slate-800">
+            Team Availability
+          </h2>
+        </div>
+        <ul className="space-y-1">
+          {volunteers.map((v, i) => {
+            const meta = statusMeta[v.status] ?? statusMeta.offline;
+            return (
+              <li
+                key={v.id}
+                className="staff-rise-in flex items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-slate-50"
+                style={{ animationDelay: `${0.1 + i * 0.05}s` }}
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white ${v.avatarColor}`}
+                >
+                  {v.initials}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-800">
+                  {v.name}
+                </span>
+                <span
+                  className={`inline-flex items-center gap-1.5 text-xs font-medium ${meta.text}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+                  {meta.label}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section className="staff-card-hover flex-1 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <Clock className="h-4 w-4 text-slate-400" />
+          <h2 className="text-sm font-semibold text-slate-800">
+            Recent Requests
+          </h2>
+        </div>
+        <ol className="relative space-y-4 border-l border-slate-100 pl-4">
+          {alerts.map((a, i) => (
+            <li
+              key={a.id}
+              className="staff-rise-in relative"
+              style={{ animationDelay: `${0.15 + i * 0.07}s` }}
+            >
+              <span
+                className={`absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full border-2 border-white ${
+                  a.level === "high"
+                    ? "bg-red-500"
+                    : a.level === "busy"
+                      ? "bg-amber-400"
+                      : "bg-emerald-500"
+                }`}
+              />
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate text-sm font-medium text-slate-800">
+                  {a.title}
+                </p>
+                <span className="shrink-0 text-[11px] text-slate-400">
+                  {a.time}
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-slate-500">
+                {a.zoneName} · {a.description}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 }

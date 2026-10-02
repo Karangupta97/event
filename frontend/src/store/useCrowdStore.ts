@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { Zone, ZoneFlow } from "@/features/zones/types";
 import type { Staff } from "@/features/staff/types";
 import type { Alert, AlertStatus } from "@/features/alerts/types";
@@ -78,7 +79,9 @@ function seededHistory(count: number): number[] {
   return arr;
 }
 
-export const useCrowdStore = create<CrowdState>((set, get) => ({
+export const useCrowdStore = create<CrowdState>()(
+  persist(
+    (set, get) => ({
   zones: [],
   staff: [],
   alerts: [],
@@ -223,4 +226,24 @@ export const useCrowdStore = create<CrowdState>((set, get) => ({
       message: `Emergency stood down · duration ${secs}s`,
     });
   },
-}));
+    }),
+    {
+      name: "eventflow-crowd-store",
+      storage: createJSONStorage(() => localStorage),
+      // Persist only the domain state, not the action functions.
+      partialize: (s) => ({
+        zones: s.zones,
+        staff: s.staff,
+        alerts: s.alerts,
+        broadcasts: s.broadcasts,
+        auditLog: s.auditLog,
+        recommendations: s.recommendations,
+        mode: s.mode,
+        emergencyScenario: s.emergencyScenario,
+        emergencyStartedAt: s.emergencyStartedAt,
+        selectedZoneId: s.selectedZoneId,
+        started: s.started,
+      }),
+    },
+  ),
+);

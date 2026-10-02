@@ -7,7 +7,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useState } from "react";
-import { alerts, earlyWarning, emergencyAlert } from "../mock-data";
+import { useStaffData } from "../store-adapter";
 import type { Alert } from "../types";
 import { levelStyles, statusStyles } from "../utils";
 
@@ -23,7 +23,10 @@ function AlertIcon({ level }: { level: Alert["level"] }) {
 }
 
 export function EmergencyBanner({ variant = "desktop" }: { variant?: "desktop" | "mobile" }) {
+  const { emergencyAlert, earlyWarning } = useStaffData();
+
   if (variant === "mobile") {
+    if (!earlyWarning) return null;
     return (
       <button
         type="button"
@@ -40,6 +43,8 @@ export function EmergencyBanner({ variant = "desktop" }: { variant?: "desktop" |
       </button>
     );
   }
+
+  if (!emergencyAlert) return null;
 
   return (
     <div className="rounded-2xl border border-red-100 bg-red-50 p-4 shadow-sm">
@@ -68,6 +73,7 @@ export function EmergencyBanner({ variant = "desktop" }: { variant?: "desktop" |
 }
 
 export function ActiveAlertsList({ limit }: { limit?: number }) {
+  const { alerts } = useStaffData();
   const items = limit ? alerts.slice(0, limit) : alerts;
 
   return (
@@ -122,7 +128,9 @@ export function AlertsPanel({
   collapsible?: boolean;
   defaultOpen?: boolean;
 }) {
+  const { alerts } = useStaffData();
   const [open, setOpen] = useState(defaultOpen);
+  const activeCount = alerts.filter((a) => a.status !== "resolved").length;
 
   if (!collapsible) {
     return (
@@ -143,9 +151,11 @@ export function AlertsPanel({
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-red-500" />
           <h2 className="text-sm font-semibold text-slate-800">Alerts</h2>
-          <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-            2
-          </span>
+          {activeCount > 0 && (
+            <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+              {activeCount}
+            </span>
+          )}
         </div>
         <ChevronDown
           className={`h-4 w-4 text-slate-400 transition ${open ? "rotate-180" : ""}`}

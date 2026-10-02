@@ -2,7 +2,8 @@
 
 import { Check, ChevronDown, Info, Send, Users } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { volunteers, zones } from "../mock-data";
+import { useCrowdStore, uid } from "@/store/useCrowdStore";
+import { toOrgZoneId, useStaffData } from "../store-adapter";
 
 const REQUEST_HELP_TEXT =
   "Need backup in your zone? Request an extra volunteer when crowd pressure rises or you need support handling an alert.";
@@ -38,22 +39,83 @@ export function DispatchPanel({
   defaultOpen?: boolean;
   defaultZoneId?: string;
 }) {
+  const { volunteers, zones } = useStaffData();
+  const dispatchStaff = useCrowdStore((s) => s.dispatchStaff);
+  const addAlert = useCrowdStore((s) => s.addAlert);
+  const addBroadcast = useCrowdStore((s) => s.addBroadcast);
+  const log = useCrowdStore((s) => s.log);
+
   const [open, setOpen] = useState(defaultOpen);
-  const [volunteerId, setVolunteerId] = useState(
-    volunteers.find((v) => v.status === "available")?.id ?? volunteers[0].id,
-  );
+  const [volunteerId, setVolunteerId] = useState<string>("");
   const [zoneId, setZoneId] = useState(defaultZoneId ?? "food-court");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const selected = volunteers.find((v) => v.id === volunteerId)!;
+  // Resolve the active volunteer from live data (default: first available).
+  const effectiveVolunteerId =
+    volunteerId ||
+    volunteers.find((v) => v.status === "available")?.id ||
+    volunteers[0]?.id ||
+    "";
+  const selected =
+    volunteers.find((v) => v.id === effectiveVolunteerId) ?? volunteers[0];
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!selected) return;
+
+    // Write the request into the SHARED store so the /org console sees it.
+    const orgZoneId = toOrgZoneId(zoneId);
+    const zoneName = zones.find((z) => z.id === zoneId)?.name ?? zoneId;
+
+    // 1) move the chosen volunteer toward the target zone
+    dispatchStaff(selected.id, orgZoneId);
+
+    // 2) raise an alert org can triage (assigned to the requested volunteer)
+    addAlert({
+      id: uid("alert"),
+      type: "staff_request",
+      severity: "warning",
+      zoneId: orgZoneId,
+      message: message.trim()
+        ? `Volunteer backup requested: ${message.trim()}`
+        : "Volunteer backup requested by field staff",
+      assignedTo: selected.id,
+      status: "assigned",
+      t: Date.now(),
+    });
+
+    // 3) broadcast + audit so it shows up across the org console
+    addBroadcast({
+      id: uid("bcast"),
+      channel: "staff",
+      severity: "warning",
+      zoneIds: [orgZoneId],
+      message: `${selected.name} dispatched to ${zoneName}${
+        message.trim() ? ` — ${message.trim()}` : ""
+      }`,
+      sentAt: Date.now(),
+    });
+    log({
+      kind: "dispatch",
+      zoneId: orgZoneId,
+      message: `Field request: ${selected.name} → ${zoneName}`,
+    });
+
     setSent(true);
     window.setTimeout(() => setSent(false), 2500);
     setMessage("");
+  }
+
+  // Store not seeded yet (first paint before the simulator seeds).
+  if (!selected) {
+    return (
+      <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+        <div className="h-5 w-32 animate-pulse rounded bg-slate-100" />
+        <div className="mt-4 h-24 animate-pulse rounded-xl bg-slate-50" />
+      </section>
+    );
   }
 
   const form = (
@@ -117,7 +179,7 @@ export function DispatchPanel({
                     <span className="flex-1 text-sm font-medium text-slate-800">
                       {v.name}
                     </span>
-                    {v.id === volunteerId && (
+                    {v.id === effectiveVolunteerId && (
                       <Check className="h-4 w-4 text-blue-600" />
                     )}
                   </button>
@@ -187,8 +249,7 @@ export function DispatchPanel({
 
   if (!collapsible) {
     return (
-      <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-        <div className="mb-4 flex items-start justify-between gap-2">
+      <section className="staff-card-hover flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"> <div className="mb-4 flex items-start justify-between gap-2">
           <div className="min-w-0">
             <h2 className="text-sm font-semibold text-slate-800">
               Request Volunteer
