@@ -118,7 +118,6 @@ export default function Home() {
           }}
           aria-label="Hero section"
         >
-          {/* Video */}
           <video
             style={{
               position: "absolute",
@@ -136,7 +135,6 @@ export default function Home() {
             aria-hidden="true"
           />
 
-          {/* Left-weighted overlay for text readability */}
           <div
             aria-hidden="true"
             style={{
@@ -148,7 +146,6 @@ export default function Home() {
             }}
           />
 
-          {/* Bottom fade — very subtle, only the final ~50px */}
           <div
             aria-hidden="true"
             style={{
@@ -163,7 +160,6 @@ export default function Home() {
             }}
           />
 
-          {/* Content */}
           <div
             style={{
               position: "relative",
@@ -177,7 +173,6 @@ export default function Home() {
             }}
           >
             <div style={{ maxWidth: 640 }}>
-              {/* Eyebrow */}
               <p
                 className="reveal"
                 style={{
@@ -196,7 +191,6 @@ export default function Home() {
                 Smart Event Operations
               </p>
 
-              {/* Headline */}
               <h1
                 className="reveal reveal-d1"
                 style={{
@@ -214,7 +208,6 @@ export default function Home() {
                 <em style={{ color: "#2563EB", fontStyle: "italic" }}>moving.</em>
               </h1>
 
-              {/* Sub-copy */}
               <p
                 className="reveal reveal-d2"
                 style={{
@@ -231,7 +224,6 @@ export default function Home() {
                 bottlenecks become operational problems.
               </p>
 
-              {/* CTAs */}
               <div
                 className="reveal reveal-d3"
                 style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center" }}
@@ -251,21 +243,14 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* Live Event floating card — covers watermark, deliberate product preview */}
           <LiveEventCard />
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 02 — THE CHALLENGE
-            bg: #F8F7F3 (main ivory)
-        ════════════════════════════════════════════ */}
         <section
           style={{ background: "#F8F7F3", padding: "112px 0" }}
           aria-labelledby="challenge-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-
-            {/* Two-column header */}
             <div
               style={{
                 display: "grid",
@@ -316,7 +301,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Three cards */}
             <div
               style={{
                 display: "grid",
@@ -386,16 +370,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 03 — THE SMARTER APPROACH
-            bg: #FFFFFF
-        ════════════════════════════════════════════ */}
         <section
           style={{ background: "#FFFFFF", padding: "112px 0" }}
           aria-labelledby="approach-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-            {/* Header — centered */}
             <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 72px" }}>
               <p className="label reveal" style={{ marginBottom: 16 }}>The Smarter Approach</p>
               <h2
@@ -432,7 +411,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Four steps */}
             <div
               style={{
                 display: "grid",
@@ -469,7 +447,6 @@ export default function Home() {
                   className={`step-card reveal reveal-d${i + 1}`}
                   style={{ position: "relative" }}
                 >
-                  {/* Blue connector line (desktop only, visual only) */}
                   {i < 3 && (
                     <div
                       aria-hidden="true"
@@ -524,17 +501,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 04 — OPERATIONS DASHBOARD
-            bg: #F2F1EC (alt ivory)
-        ════════════════════════════════════════════ */}
         <section
           id="dashboard"
           style={{ background: "#F2F1EC", padding: "112px 0" }}
           aria-labelledby="dashboard-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-            {/* Header */}
             <div style={{ maxWidth: 560, marginBottom: 56 }}>
               <p className="label reveal" style={{ marginBottom: 16 }}>The Operations View</p>
               <h2
@@ -567,9 +539,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Dashboard frame */}
             <div className="dash-frame reveal-scale">
-              {/* Titlebar */}
               <div className="dash-titlebar">
                 <span className="dash-dot" style={{ background: "#FC5F57" }} aria-hidden="true"/>
                 <span className="dash-dot" style={{ background: "#FDBC2C" }} aria-hidden="true"/>
@@ -587,7 +557,6 @@ export default function Home() {
                 >
                   SmartFlow Operations — Live View
                 </span>
-                {/* Live badge */}
                 <span
                   style={{
                     display: "inline-flex",
@@ -608,7 +577,6 @@ export default function Home() {
                 </span>
               </div>
 
-              {/* Dashboard body */}
               <div
                 style={{
                   padding: "24px",
@@ -618,7 +586,6 @@ export default function Home() {
                   gap: 20,
                 }}
               >
-                {/* KPI row */}
                 <div
                   style={{
                     display: "grid",
@@ -680,7 +647,6 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Map + zones row */}
                 <div
                   style={{
                     display: "grid",
@@ -690,7 +656,6 @@ export default function Home() {
                   }}
                   className="responsive-map"
                 >
-                  {/* Venue map */}
                   <div
                     style={{
                       background: "#FFFFFF",
@@ -722,11 +687,8 @@ export default function Home() {
                         style={{ width: "100%", height: "100%" }}
                         preserveAspectRatio="xMidYMid meet"
                       >
-                        {/* Outer boundary */}
                         <rect x="6" y="6" width="708" height="268" rx="10"
                           fill="none" stroke="#E4E7EC" strokeWidth="1.5" />
-
-                        {/* Main Stage — Warning amber */}
                         <rect x="22" y="22" width="318" height="108" rx="7"
                           fill="rgba(217,119,6,0.08)" stroke="#D97706" strokeWidth="1.2"/>
                         <text x="181" y="68" textAnchor="middle"
@@ -739,8 +701,6 @@ export default function Home() {
                         </text>
                         <rect x="100" y="100" width="162" height="4" rx="2" fill="#EEF0F3"/>
                         <rect x="100" y="100" width="133" height="4" rx="2" fill="#D97706"/>
-
-                        {/* Food Court — Critical red */}
                         <rect x="380" y="22" width="318" height="108" rx="7"
                           fill="rgba(220,38,38,0.08)" stroke="#DC2626" strokeWidth="1.2"/>
                         <text x="539" y="68" textAnchor="middle"
@@ -753,8 +713,6 @@ export default function Home() {
                         </text>
                         <rect x="458" y="100" width="162" height="4" rx="2" fill="#EEF0F3"/>
                         <rect x="458" y="100" width="152" height="4" rx="2" fill="#DC2626"/>
-
-                        {/* Gate A — Normal green */}
                         <rect x="22" y="152" width="318" height="108" rx="7"
                           fill="rgba(22,163,74,0.06)" stroke="rgba(22,163,74,0.35)" strokeWidth="1.2"/>
                         <text x="181" y="200" textAnchor="middle"
@@ -767,8 +725,6 @@ export default function Home() {
                         </text>
                         <rect x="100" y="232" width="162" height="4" rx="2" fill="#EEF0F3"/>
                         <rect x="100" y="232" width="115" height="4" rx="2" fill="#16A34A"/>
-
-                        {/* Activity Zone — Normal green */}
                         <rect x="380" y="152" width="318" height="108" rx="7"
                           fill="rgba(22,163,74,0.04)" stroke="rgba(22,163,74,0.2)" strokeWidth="1.2"/>
                         <text x="539" y="200" textAnchor="middle"
@@ -781,8 +737,6 @@ export default function Home() {
                         </text>
                         <rect x="458" y="232" width="162" height="4" rx="2" fill="#EEF0F3"/>
                         <rect x="458" y="232" width="91" height="4" rx="2" fill="#16A34A" fillOpacity="0.7"/>
-
-                        {/* Crowd-flow arrows */}
                         <defs>
                           <marker id="arr-amber" markerWidth="7" markerHeight="7"
                             refX="5" refY="3.5" orient="auto">
@@ -793,22 +747,17 @@ export default function Home() {
                             <path d="M0 0.5 L6 3.5 L0 6.5Z" fill="#98A2B3" fillOpacity="0.55"/>
                           </marker>
                         </defs>
-                        {/* Main Stage → Food Court (pressure) */}
                         <path d="M340 76 L380 76" stroke="#D97706" strokeWidth="1.4"
                           strokeDasharray="4 3" markerEnd="url(#arr-amber)" opacity="0.65"/>
-                        {/* Gate A → Main Stage */}
                         <path d="M181 152 L181 130" stroke="#98A2B3" strokeWidth="1.2"
                           strokeDasharray="4 3" markerEnd="url(#arr-gray)" opacity="0.5"/>
-                        {/* Gate A → Activity Zone */}
                         <path d="M340 206 L380 206" stroke="#98A2B3" strokeWidth="1.2"
                           strokeDasharray="4 3" markerEnd="url(#arr-gray)" opacity="0.4"/>
                       </svg>
                     </div>
                   </div>
 
-                  {/* Zone list + alert */}
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    {/* Zone occupancy list */}
                     <div
                       style={{
                         background: "#FFFFFF",
@@ -879,7 +828,6 @@ export default function Home() {
                       </ul>
                     </div>
 
-                    {/* Critical alert preview */}
                     <div
                       style={{
                         background: "#FEF2F2",
@@ -915,7 +863,7 @@ export default function Home() {
                         <strong style={{ color: "#DC2626" }}>4 minutes</strong>.
                       </p>
                       <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 5 }}>
-                        {["Redirect attendees to Food Court B", "Deploy 2 staff to the junction"].map((action) => (
+                        {['Redirect attendees to Food Court B', 'Deploy 2 staff to the junction'].map((action) => (
                           <li
                             key={action}
                             style={{
@@ -940,10 +888,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 05 — FROM WARNING TO DECISION
-            bg: #FFFFFF
-        ════════════════════════════════════════════ */}
         <section
           style={{ background: "#FFFFFF", padding: "112px 0" }}
           aria-labelledby="alert-heading"
@@ -958,7 +902,6 @@ export default function Home() {
               }}
               className="responsive-2col"
             >
-              {/* Left — copy */}
               <div>
                 <p className="label reveal" style={{ marginBottom: 16 }}>Predict Before It Builds</p>
                 <h2
@@ -993,7 +936,6 @@ export default function Home() {
                   clear action before the situation becomes a disruption.
                 </p>
 
-                {/* Flow diagram */}
                 <div
                   className="reveal reveal-d3"
                   style={{
@@ -1043,9 +985,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right — alert panel */}
               <div className="alert-panel reveal reveal-d1">
-                {/* Header row */}
                 <div
                   style={{
                     display: "flex",
@@ -1096,7 +1036,6 @@ export default function Home() {
                   </span>
                 </div>
 
-                {/* Prediction */}
                 <div
                   style={{
                     background: "rgba(220,38,38,0.06)",
@@ -1119,7 +1058,6 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Progress bar */}
                 <div style={{ marginBottom: 24 }}>
                   <div className="progress-track">
                     <div
@@ -1146,10 +1084,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Divider */}
                 <div style={{ borderTop: "1px solid rgba(37,99,235,0.12)", marginBottom: 20 }} />
 
-                {/* Recommended action */}
                 <p
                   style={{
                     fontFamily: "var(--font-sans)",
@@ -1202,16 +1138,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 06 — COORDINATION
-            bg: #F8F7F3
-        ════════════════════════════════════════════ */}
         <section
           style={{ background: "#F8F7F3", padding: "112px 0" }}
           aria-labelledby="coord-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-            {/* Heading — centered */}
             <div style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 72px" }}>
               <h2
                 id="coord-heading"
@@ -1233,7 +1164,6 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Two columns */}
             <div
               style={{
                 display: "grid",
@@ -1242,7 +1172,6 @@ export default function Home() {
               }}
               className="responsive-2col"
             >
-              {/* Attendee movement */}
               <div
                 style={{
                   background: "#FFFFFF",
@@ -1291,7 +1220,6 @@ export default function Home() {
                   without requiring manual intervention.
                 </p>
 
-                {/* Simple flow vis */}
                 <div
                   style={{
                     background: "#F8F7F3",
@@ -1364,7 +1292,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Staff deployment */}
               <div
                 style={{
                   background: "#FFFFFF",
@@ -1413,7 +1340,6 @@ export default function Home() {
                   rather than radio calls and guesswork.
                 </p>
 
-                {/* Staff grid */}
                 <div
                   style={{
                     background: "#F8F7F3",
@@ -1480,17 +1406,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 07 — HOW IT WORKS
-            bg: #FFFFFF
-        ════════════════════════════════════════════ */}
         <section
           id="how-it-works"
           style={{ background: "#FFFFFF", padding: "112px 0" }}
           aria-labelledby="hiw-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-            {/* Header */}
             <div style={{ maxWidth: 560, marginBottom: 72 }}>
               <p className="label reveal" style={{ marginBottom: 16 }}>How SmartFlow Works</p>
               <h2
@@ -1511,7 +1432,6 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Four step editorial layout */}
             <div
               style={{
                 display: "grid",
@@ -1590,17 +1510,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 08 — FEATURES
-            bg: #F2F1EC
-        ════════════════════════════════════════════ */}
         <section
           id="features"
           style={{ background: "#F2F1EC", padding: "112px 0" }}
           aria-labelledby="features-heading"
         >
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
-            {/* Header */}
             <div style={{ maxWidth: 560, marginBottom: 64 }}>
               <h2
                 id="features-heading"
@@ -1621,7 +1536,6 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* 2×3 grid */}
             <div
               style={{
                 display: "grid",
@@ -1678,10 +1592,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            SECTION 09 — FINAL CTA
-            bg: #F8F7F3 — LIGHT
-        ════════════════════════════════════════════ */}
         <section
           style={{ background: "#F8F7F3", padding: "128px 0 120px" }}
           aria-labelledby="cta-heading"
@@ -1740,10 +1650,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            FOOTER
-            bg: #F2F1EC — LIGHT
-        ════════════════════════════════════════════ */}
         <footer
           style={{
             background: "#F2F1EC",
@@ -1763,7 +1669,6 @@ export default function Home() {
               gap: 40,
             }}
           >
-            {/* Brand */}
             <div style={{ maxWidth: 260 }}>
               <div
                 style={{
@@ -1823,7 +1728,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Nav links */}
             <nav aria-label="Footer navigation">
               <ul
                 style={{
@@ -1846,7 +1750,6 @@ export default function Home() {
               </ul>
             </nav>
 
-            {/* Copyright */}
             <p
               style={{
                 fontFamily: "var(--font-sans)",
@@ -1861,8 +1764,9 @@ export default function Home() {
         </footer>
 
       </main>
-
-
     </>
+  );
+}
+
   );
 }
