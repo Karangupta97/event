@@ -13,12 +13,7 @@
 }
 
 :root {
-<<<<<<< Updated upstream
   color-scheme: light;
-=======
-  --background: #f8fafc;
-  --foreground: #0f172a;
->>>>>>> Stashed changes
 }
 
 html,
@@ -28,7 +23,6 @@ body {
   font-family: var(--font-sans);
 }
 
-<<<<<<< Updated upstream
 /* Tabular numbers everywhere numbers matter */
 .tnum {
   font-variant-numeric: tabular-nums;
@@ -88,14 +82,9 @@ body {
 
 html {
   scroll-behavior: smooth;
-=======
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Staff top bar motion */
+/* Staff top bar motion (shared with the volunteer staff console) */
 @keyframes staff-wave {
   0%,
   60%,
