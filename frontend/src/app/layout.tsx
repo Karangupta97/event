@@ -9,27 +9,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-<<<<<<< Updated upstream
-  title: "EventFlow — Organizer Console",
+  title: "EventFlow — Smart Event Crowd Management",
   description:
-    "Smart Event Crowd Management — monitor the venue and act before it gets crowded.",
-=======
-  title: "EventFlow 2025",
-  description: "Venue operations and volunteer staff console",
->>>>>>> Stashed changes
+    "Monitor the venue and act before it gets crowded — organizer and staff consoles.",
 };
 
 export default function RootLayout({
   children,
-<<<<<<< Updated upstream
-}: {
-  children: React.ReactNode;
-}) {
-=======
 }: Readonly<{
   children: React.ReactNode;
 }>) {
->>>>>>> Stashed changes
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
       <body className="min-h-full antialiased">{children}</body>
